@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/onboarding_nav_graph"
+    app:startDestination="@id/userDetailsFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.uberride.ui.onboarding.SplashFragment"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.uberride.ui.onboarding.PhoneNumberFragment">
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.uberride.ui.onboarding.OtpFragment"
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_registerFragment_to_userDetailsFragment"
+            app:destination="@id/userDetailsFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/userDetailsFragment"
+        android:name="com.example.uberride.ui.onboarding.UserDetailsFragment"
+        android:label="fragment_userdetails"
+        tools:layout="@layout/fragment_userdetails" />
+</navigation>
