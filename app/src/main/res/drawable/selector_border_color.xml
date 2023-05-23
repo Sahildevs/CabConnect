@@ -4,16 +4,14 @@
     <item android:state_selected="true">
         <shape>
             <solid android:color="@color/white"/>
-            <stroke android:color="@color/yellow" android:width="2dp"/>
-            <corners android:radius="8dp"/>
+            <stroke android:color="@color/selected_border_color" android:width="2dp"/>
         </shape>
     </item>
 
     <item>
         <shape>
             <solid android:color="@color/white"/>
-            <stroke android:color="@color/black" android:width="2dp"/>
-            <corners android:radius="8dp"/>
+            <stroke android:color="@color/default_border_color" android:width="2dp"/>
         </shape>
     </item>
 

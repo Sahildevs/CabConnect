@@ -1,4 +1,4 @@
-package com.example.uberride.ui.onboarding
+package com.example.uberride.ui.onboarding.fragments
 
 import android.content.Intent
 import android.os.Bundle

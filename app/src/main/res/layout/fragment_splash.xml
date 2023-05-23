@@ -10,42 +10,38 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.onboarding.SplashFragment">
+        tools:context=".ui.onboarding.fragments.SplashFragment">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/onboarding_background"
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp" >
+            android:padding="16dp"
+            >
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="WELCOME!"
-                android:textStyle="bold"
-                android:textSize="40sp"
-                android:textColor="@color/yellow"
-                />
+                style="@style/text_style_large_title_text" />
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/taci"/>
-
+                android:layout_height="184dp" />
 
 
             <TextView
-                android:layout_width="250dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="SignUp To Enjoy The Experience..."
-                android:textSize="20sp"
-                android:textColor="@color/yellow"
-                android:layout_marginTop="25dp"/>
+                android:text="Connecting you to your destination."
+                style="@style/text_style_yellow_medium_text" />
 
             <Space
                 android:layout_width="wrap_content"
@@ -56,7 +52,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
 
                 <View
                     android:layout_width="0dp"
@@ -65,21 +62,9 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_get_start"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:background="@drawable/bg_button"
-                    app:backgroundTint="@color/yellow"
-                    android:drawableEnd="@drawable/ic_next"
-                    android:drawableTint="@color/black"
                     android:text="get started"
-                    android:textColor="@color/black"
-                    android:maxLines="1"
-                    app:autoSizeTextType="uniform"
-                    android:autoSizeMaxTextSize="15sp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/small_button_style" />
+
             </LinearLayout>
 
 

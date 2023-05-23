@@ -12,84 +12,54 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="13dp">
 
         <LinearLayout
             android:id="@+id/parent_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:orientation="vertical"
-            android:paddingVertical="15dp"
-            android:paddingRight="15dp"
-            android:gravity="center"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:background="@drawable/selector_border_color">
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_launcher_background"/>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/circleImageView"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:scaleType="centerCrop"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_launcher_background"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="#FF000000"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
-                    android:text="1 Km"
-                    android:textColor="@color/black"
-                    android:background="@drawable/bg_cab_distance_tv" />
-
-            </FrameLayout>
 
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="10dp"
-                android:paddingHorizontal="18dp"
+                android:layout_marginVertical="5dp"
                 android:paddingVertical="5dp"
-                android:background="@drawable/bg_nearby_cab_detail">
+                android:paddingStart="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{data.model}"
-                    android:textSize="14sp"
-                    android:textStyle="normal"
-                    android:textAlignment="center"
-                    android:textColor="@color/black" />
+                    style="@style/text_style_cell_body_text" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{data.number}"
-                    android:textSize="14sp"
-                    android:textStyle="normal"
-                    android:textAlignment="center"
-                    android:textColor="@color/black" />
+                    style="@style/text_style_cell_body_text"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="4 Seater"
-                    android:textSize="14sp"
-                    android:textStyle="normal"
-                    android:textAlignment="center"
-                    android:textColor="@color/black" />
+                    style="@style/text_style_cell_body_text" />
 
             </LinearLayout>
 

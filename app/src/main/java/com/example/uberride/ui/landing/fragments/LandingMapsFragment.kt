@@ -1,4 +1,4 @@
-package com.example.uberride.ui.landing
+package com.example.uberride.ui.landing.fragments
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -20,9 +20,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.uberride.R
 import com.example.uberride.data.model.CabData
 import com.example.uberride.databinding.FragmentLandingMapsBinding
-import com.example.uberride.ui.landing.adapters.NearbyCabListAdapter
+import com.example.uberride.ui.landing.LandingViewModel
 import com.example.uberride.ui.landing.bottomsheets.AddDropLocationBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.NearbyCabListBottomSheet
+import com.example.uberride.ui.landing.bottomsheets.RequestProcessingBottomSheet
 import com.google.android.gms.location.*
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,7 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback {
+class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, NearbyCabListBottomSheet.Callback {
 
     lateinit var binding: FragmentLandingMapsBinding
 
@@ -49,8 +50,9 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback {
 
     private val landingViewModel: LandingViewModel by activityViewModels()
 
-    lateinit var addDropLocationBottomSheet: AddDropLocationBottomSheet
-    lateinit var nearbyCabListBottomSheet: NearbyCabListBottomSheet
+    private lateinit var addDropLocationBottomSheet: AddDropLocationBottomSheet
+    private lateinit var nearbyCabListBottomSheet: NearbyCabListBottomSheet
+    private lateinit var requestProcessingBottomSheet: RequestProcessingBottomSheet
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +98,13 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback {
         }
     }
 
+    /** Network Call */
+    private fun bookMyCab() {
+        lifecycleScope.launch {
+            landingViewModel.bookMyCabServiceCall()
+        }
+    }
+
 
 
 
@@ -109,6 +118,14 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback {
             }
             else {
                 Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+        landingViewModel.responseBookMyCab.observe(viewLifecycleOwner) { result->
+            if (result != null) {
+
+                Log.d("BOOKING", "${result.body()?.status}")
             }
         }
     }
@@ -136,15 +153,16 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback {
 
 
     private fun showNearbyCabBottomSheet(list: ArrayList<CabData>) {
-        nearbyCabListBottomSheet = NearbyCabListBottomSheet(list)
+        nearbyCabListBottomSheet = NearbyCabListBottomSheet(this, list)
         nearbyCabListBottomSheet.show(childFragmentManager, null)
         addDropLocationBottomSheet.isCancelable = true
     }
 
-
-
-
-
+    private fun showLoadingBottomSheet() {
+        requestProcessingBottomSheet = RequestProcessingBottomSheet()
+        requestProcessingBottomSheet.show(childFragmentManager, null)
+        requestProcessingBottomSheet.isCancelable = false
+    }
 
 
 
@@ -320,7 +338,12 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback {
     }
 
 
-
+    //Book cab request
+    override fun requestCab() {
+        bookMyCab()
+        nearbyCabListBottomSheet.dismiss()
+        showLoadingBottomSheet()
+    }
 
 
 

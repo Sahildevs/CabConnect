@@ -1,4 +1,4 @@
-package com.example.uberride.ui.onboarding
+package com.example.uberride.ui.onboarding.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.uberride.databinding.FragmentUserdetailsBinding
 import com.example.uberride.ui.landing.LandingBaseActivity
+import com.example.uberride.ui.onboarding.OnboardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

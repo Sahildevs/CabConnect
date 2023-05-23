@@ -6,6 +6,6 @@
     app:startDestination="@id/landingMapsFragment">
     <fragment
         android:id="@+id/landingMapsFragment"
-        android:name="com.example.uberride.ui.landing.LandingMapsFragment"
+        android:name="com.example.uberride.ui.landing.fragments.LandingMapsFragment"
         tools:layout="@layout/fragment_landing_maps" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.example.uberride.ui.onboarding
+package com.example.uberride.ui.onboarding.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.uberride.R
 import com.example.uberride.databinding.FragmentRegisterBinding
+import com.example.uberride.ui.onboarding.OnboardingViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential

@@ -32,7 +32,7 @@ class NearbyCabListAdapter(private var callback: Callback, private var cabList: 
                     binding.parentLayout.isSelected = data.isSelected
 
                     //If any cab is selected, enable the send request button
-                    listener.bookCab(data, adapterPosition)
+                    listener.selectedCab(data, adapterPosition)
 
                 }
             }
@@ -54,7 +54,7 @@ class NearbyCabListAdapter(private var callback: Callback, private var cabList: 
     }
 
     interface Callback{
-        fun bookCab(data: CabData, position: Int)
+        fun selectedCab(data: CabData, position: Int)
     }
 
 }

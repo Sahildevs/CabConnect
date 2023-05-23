@@ -1,4 +1,4 @@
-package com.example.uberride.ui.onboarding
+package com.example.uberride.ui.onboarding.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.uberride.R
 import com.example.uberride.databinding.FragmentLoginBinding
+import com.example.uberride.ui.onboarding.OnboardingViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth

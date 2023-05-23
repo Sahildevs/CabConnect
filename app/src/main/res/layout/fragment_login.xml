@@ -10,7 +10,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.onboarding.PhoneNumberFragment">
+        tools:context=".ui.onboarding.fragments.PhoneNumberFragment">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/onboarding_background"
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,11 +27,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SIGN UP!"
-                android:textStyle="bold"
-                android:textSize="40sp"
-                android:textColor="@color/yellow"
-                />
+                android:text="VERIFY &amp; RIDE!"
+                style="@style/text_style_large_title_text" />
+
+            <TextView
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:text="Securely verify your phone number &amp; hop onboard."
+                style="@style/text_style_yellow_medium_text" />
 
 
             <Space
@@ -59,7 +68,7 @@
                     android:inputType="phone"
                     android:textColorHint="#505050"
                     android:maxLength="10"
-                    android:background="@color/white"/>
+                    />
 
             </LinearLayout>
 
@@ -83,13 +92,6 @@
                 android:layout_gravity="center"
                 android:visibility="gone"/>
 
-            <TextView
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:text="Verify Your Phone Number..."
-                android:textSize="20sp"
-                android:textColor="@color/yellow"
-                android:layout_marginTop="25dp"/>
 
 
             <androidx.legacy.widget.Space
@@ -100,7 +102,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
 
                 <View
                     android:layout_width="0dp"
@@ -108,19 +111,9 @@
                     android:layout_weight="1"/>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSendOtp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingVertical="10dp"
-                    android:background="@drawable/bg_button"
-                    app:backgroundTint="@color/yellow"
-                    android:drawableEnd="@drawable/ic_next"
-                    android:text="Login"
-                    android:textColor="@color/black"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"
-                    />
+                    android:id="@+id/btn_get_start"
+                    android:text="send otp"
+                    style="@style/small_button_style" />
 
             </LinearLayout>
 

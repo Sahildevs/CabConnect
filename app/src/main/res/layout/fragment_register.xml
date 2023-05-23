@@ -10,7 +10,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.onboarding.OtpFragment">
+        tools:context=".ui.onboarding.fragments.OtpFragment">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/onboarding_background"
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,16 +27,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SIGN IN!"
-                android:textStyle="bold"
-                android:textSize="40sp"
-                android:textColor="@color/yellow"
-                />
+                android:text="VERIFY &amp; RIDE!"
+                style="@style/text_style_large_title_text" />
+
+            <TextView
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:text="Enter the code, Unlock the ride."
+                style="@style/text_style_yellow_medium_text" />
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_height="181dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -140,16 +148,11 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="280dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Enter the six digit verification code sent to +9193****187."
-                android:layout_gravity="center"
                 android:textColor="@color/yellow"
-                android:textAlignment="center"
-                android:textSize="15sp"
-                android:paddingStart="5dp"
-                android:paddingTop="5dp"
-                android:layout_marginTop="15dp"/>
+                android:textSize="13sp" />
 
             <ProgressBar
                 android:id="@+id/loader2"
@@ -166,7 +169,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
 
                 <View
                     android:layout_width="0dp"
@@ -174,19 +178,9 @@
                     android:layout_weight="1"/>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnVerify"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:background="@drawable/bg_button"
-                    app:backgroundTint="@color/yellow"
-                    android:drawableEnd="@drawable/ic_next"
-                    android:text="Verify"
-                    android:textColor="@color/black"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"
-                    />
+                    android:id="@+id/btn_get_start"
+                    android:text="verify"
+                    style="@style/small_button_style" />
 
             </LinearLayout>
 
