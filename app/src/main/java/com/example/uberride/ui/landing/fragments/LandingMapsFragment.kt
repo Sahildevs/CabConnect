@@ -1,5 +1,6 @@
 package com.example.uberride.ui.landing.fragments
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Address
@@ -14,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +26,7 @@ import com.example.uberride.ui.landing.LandingViewModel
 import com.example.uberride.ui.landing.bottomsheets.AddDropLocationBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.NearbyCabListBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.RequestProcessingBottomSheet
+import com.example.uberride.utils.LocationUtils
 import com.google.android.gms.location.*
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -31,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -40,26 +44,20 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
     lateinit var binding: FragmentLandingMapsBinding
 
-    private lateinit var currentLocation: Location
+    private lateinit var locationUtils: LocationUtils
     private lateinit var mMap: GoogleMap
-    private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var locationCallback: LocationCallback
-    private lateinit var locationRequest: LocationRequest
-    private val REQUEST_CODE = 101
-
-
-    private val landingViewModel: LandingViewModel by activityViewModels()
 
     private lateinit var addDropLocationBottomSheet: AddDropLocationBottomSheet
     private lateinit var nearbyCabListBottomSheet: NearbyCabListBottomSheet
     private lateinit var requestProcessingBottomSheet: RequestProcessingBottomSheet
 
+    private val landingViewModel: LandingViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mFusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireActivity())
+        //This class handles all location related operation
+        locationUtils = LocationUtils(requireContext())
 
     }
 
@@ -74,8 +72,8 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
         }
-
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,6 +109,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private fun serviceObserver() {
 
         landingViewModel.responseNearbyCabs.observe(viewLifecycleOwner) { result ->
+
             if (result.body() != null) {
 
                 Log.d("CABS", "${result.body()!!.cabs}")
@@ -119,15 +118,19 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
             else {
                 Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
             }
+
         }
 
 
         landingViewModel.responseBookMyCab.observe(viewLifecycleOwner) { result->
+
             if (result != null) {
 
                 Log.d("BOOKING", "${result.body()?.status}")
             }
+
         }
+
     }
 
 
@@ -135,11 +138,11 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private fun onClick() {
 
         binding.fabSearch.setOnClickListener {
-
             stopLocationUpdates()
             getLastKnownLocation()
             showAddDropLocationBottomSheet()
         }
+
     }
 
 
@@ -172,7 +175,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
 
 
-    /** Once the map is ready this callback will be triggered, and here we call a method to check for the permissions */
+    // Once the map is ready this callback will be triggered, and here we call a method to check for the permissions
     private val callback = OnMapReadyCallback { googleMap ->
         /**
          * Manipulates the map once available.
@@ -183,152 +186,102 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-
         mMap = googleMap
         checkForLocationPermission()
 
     }
 
-
-    /** Here we actually check the permission, if granted we call the get location method or else we ask for the permissions*/
+    //Check location permissions
     private fun checkForLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
 
+        if (locationUtils.checkLocationPermission()) {
             getUpdatedLocation()
-
-        } else {
-
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE
-            )
         }
-
+        else {
+            requestLocationPermission()
+        }
 
     }
 
 
-    /** Here we get the location after every few seconds when all necessary permissions have been granted */
+    //Request for location permissions
+    private fun requestLocationPermission() {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        locationPermissionLauncher.launch(permissions)
+    }
+
+
+    //Start receiving location updates
     @SuppressLint("MissingPermission")
     private fun getUpdatedLocation() {
 
         mMap.isMyLocationEnabled = true
-        locationRequest = LocationRequest.create().apply {
-            interval = 10000  //10 Seconds
-            fastestInterval = 5000  //5 seconds
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-        }
+        locationUtils.startLocationUpdates(object : LocationUtils.LocationListenerCallback{
+            override fun onLocationChanged(location: Location) {
+                //Handle location updates
 
-        //We pass this object to the requestLocationUpdates method of mFusedLocationProviderClient defined
-        // in the startLocationUpdates() method to start receiving location updates.
-        locationCallback = object : LocationCallback() {
-
-            // The onLocationResult() method will be called whenever the device's location is updated based on
-            //the interval and priority you set in the location request. It will also zoom to the updated location on the map.
-            override fun onLocationResult(locationResult: LocationResult) {
-                locationResult.lastLocation?.apply {
-                    //Storing the fetched latitude & longitude in the viewModel
-                    val currentLatitude = this.latitude
-                    val currentLongitude = this.longitude
-
-                    //Once we have the updated location we track the user on the map
-                    val latLng = LatLng(currentLatitude, currentLongitude)
-
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
-                }
+                val latLng = LatLng(location.latitude, location.longitude)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
             }
-        }
-
-        startLocationUpdates()
+        })
 
     }
 
-    @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
-        mFusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.myLooper()
-        )
-    }
 
-
-    /** Stop location updates*/
+    //Stop receiving location updates
     private fun stopLocationUpdates() {
-        mFusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        locationUtils.stopLocationUpdates()
     }
 
+
+    //Receive last known location
     @SuppressLint("MissingPermission")
     private fun getLastKnownLocation() {
-        mFusedLocationProviderClient.lastLocation
-            .addOnSuccessListener { location ->
+
+        locationUtils.getLastKnownLocation(object : LocationUtils.LocationReceiverCallback{
+            override fun onLocationReceived(location: Location?) {
 
                 if (location != null) {
+                    //Handle last known location
 
-                    // Got last known location. In some rare situations this can be null.
-                    currentLocation = location
-
-                    //Store the pickup location
-                    landingViewModel.pickUpLat = currentLocation.latitude
-                    landingViewModel.pickUpLng = currentLocation.longitude
-
-                    //Add marker on the pickup location
-                    val latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
-
-
+                    //Add a marker
+                    val latLng = LatLng(location.latitude, location.longitude)
                     var marker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here."))
-
                     if (marker != null) {
                         mMap.clear()
-
                         marker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here."))
-
                     }
 
-
-                } else {
-                    Toast.makeText(requireContext(), "Error detecting location", Toast.LENGTH_SHORT)
-                        .show()
-
+                    //Store pickup location
+                    landingViewModel.pickUpLat = location.latitude
+                    landingViewModel.pickUpLng = location.longitude
                 }
-
-
+                else {
+                    Toast.makeText(requireContext(), "Error detecting location", Toast.LENGTH_SHORT).show()
+                }
             }
+        })
+
     }
 
 
-
-
-    //This method will search the entered drop location add a marker to it
+    //Search entered drop location
     override fun searchDropLocation(dropLocation: String) {
 
-        //This will store all the matching addresses for the drop location
-        var addressList: List<Address>? = null
-
-        val geocoder = Geocoder(requireContext())
-        addressList = geocoder.getFromLocationName(dropLocation, 1)
-
-        val address = addressList!![0]
+        val address = locationUtils.searchDropLocation(dropLocation)!![0]
         val latLng = LatLng(address.latitude, address.longitude)
-
-        //Storing drop location in the view model
-        landingViewModel.dropLat = address.latitude
-        landingViewModel.dropLng = address.longitude
 
         //Adding a marker on the map
         mMap.addMarker(MarkerOptions().position(latLng).title("Drop off"))
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+
+        //Storing drop location in the view model
+        landingViewModel.dropLat = address.latitude
+        landingViewModel.dropLng = address.longitude
 
         addDropLocationBottomSheet.dismiss()
 
@@ -340,31 +293,27 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
     //Book cab request
     override fun requestCab() {
+
         bookMyCab()
         nearbyCabListBottomSheet.dismiss()
         showLoadingBottomSheet()
+
     }
 
 
 
+    //Checks permission grant result
+    private val locationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val allPermissionsGranted = permissions.all { it.value }
 
-    // This will be called after we have asked for the permissions and user reacts on our request, i.e granted or not
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == REQUEST_CODE) {
-            //Once the permissions has been granted
-            if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
-                //getCurrentLocation()
+            if (allPermissionsGranted) {
+                // Start location updates or perform other actions requiring location permission
                 getUpdatedLocation()
-
+            } else {
+                // Handle the case where some or all permissions were not granted
+                // You can show a message or take appropriate action here
             }
         }
-
-    }
 
 }

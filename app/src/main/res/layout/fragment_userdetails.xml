@@ -77,7 +77,7 @@
                     android:layout_weight="1" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_get_start"
+                    android:id="@+id/btn_login"
                     android:text="login"
                     style="@style/small_button_style" />
 
