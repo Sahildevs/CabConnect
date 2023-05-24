@@ -10,8 +10,9 @@ import com.example.uberride.R
 import com.example.uberride.databinding.BottomsheetAddDropLocationBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class AddDropLocationBottomSheet(private var callback: Callback) : BottomSheetDialogFragment() {
 
     lateinit var binding: BottomsheetAddDropLocationBinding

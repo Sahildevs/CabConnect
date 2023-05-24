@@ -12,49 +12,70 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:padding="16dp"
+        android:paddingVertical="16dp"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add your destination!"
-            android:textSize="20sp"
-            android:textColor="@color/yellow"
-            android:gravity="center"
-            />
+            android:layout_marginHorizontal="16dp"
+            android:text="Add your destination"
+            style="@style/text_style_subtitle_text" />
 
         <androidx.legacy.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="20dp"/>
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:padding="10dp"
+            android:drawableStart="@drawable/ic_my_location"
+            android:drawablePadding="15dp"
+            android:background="@drawable/bg_edit_text_grey"
+            android:hint="From"
+            style="@style/text_style_body_text"/>
+
+        <androidx.legacy.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"/>
+
 
         <EditText
             android:id="@+id/et_drop_location"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:padding="10dp"
-            android:background="@drawable/bg_edit_text_phone_no"
-            android:hint="To"/>
+            android:drawableStart="@drawable/ic_flag"
+            android:drawablePadding="15dp"
+            android:background="@drawable/bg_edit_text_grey"
+            android:hint="To"
+            style="@style/text_style_body_text"/>
 
         <androidx.legacy.widget.Space
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <androidx.legacy.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnConfirm"
+            android:id="@+id/btn_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingVertical="10dp"
-            android:background="@drawable/bg_button"
             app:backgroundTint="@color/yellow"
+            android:text="send ride request"
+            android:enabled="true"
             android:drawableEnd="@drawable/ic_next"
-            android:text="Confirm location"
-            android:textColor="@color/black"
-            android:textAlignment="textStart"
-            android:textStyle="bold"
-            />
+            style="@style/button_style_default_button" />
+
 
     </LinearLayout>
 

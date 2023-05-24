@@ -30,7 +30,7 @@ class OnBoardingActivity : AppCompatActivity() {
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.black)
 
         auth = FirebaseAuth.getInstance() //Initialised firebase auth
 

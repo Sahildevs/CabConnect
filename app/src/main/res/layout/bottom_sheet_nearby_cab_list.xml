@@ -54,6 +54,7 @@
             app:backgroundTint="@color/yellow"
             android:text="send ride request"
             android:enabled="false"
+            android:drawableEnd="@drawable/ic_next"
             style="@style/button_style_default_button" />
 
     </LinearLayout>

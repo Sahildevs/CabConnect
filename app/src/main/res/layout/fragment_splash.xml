@@ -34,7 +34,7 @@
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="184dp" />
+                android:layout_height="100dp" />
 
 
             <TextView
@@ -52,8 +52,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
+                android:orientation="horizontal" >
 
                 <View
                     android:layout_width="0dp"
@@ -62,7 +61,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_get_start"
-                    android:text="get started"
+                    android:text="lets go"
                     style="@style/small_button_style" />
 
             </LinearLayout>

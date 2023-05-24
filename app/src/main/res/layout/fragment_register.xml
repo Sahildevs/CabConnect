@@ -33,12 +33,13 @@
             <TextView
                 android:layout_width="280dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="Enter the code, Unlock the ride."
                 style="@style/text_style_yellow_medium_text" />
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="181dp" />
+                android:layout_height="120dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -169,8 +170,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
+                android:orientation="horizontal" >
 
                 <View
                     android:layout_width="0dp"
