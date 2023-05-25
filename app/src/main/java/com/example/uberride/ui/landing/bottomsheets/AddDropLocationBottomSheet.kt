@@ -17,7 +17,6 @@ class AddDropLocationBottomSheet(private var callback: Callback) : BottomSheetDi
 
     lateinit var binding: BottomsheetAddDropLocationBinding
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
