@@ -3,6 +3,7 @@ package com.example.uberride.ui.landing.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -248,12 +250,15 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
                 if (location != null) {
                     //Handle last known location
 
+                    val iconBitmap = BitmapFactory.decodeResource(resources, R.drawable.pickup_marker)
+                    val customMarker = BitmapDescriptorFactory.fromBitmap(iconBitmap)
+
                     //Add a marker
                     val latLng = LatLng(location.latitude, location.longitude)
-                    var marker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here."))
+                    var marker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here.").icon(customMarker))
                     if (marker != null) {
                         mMap.clear()
-                        marker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here."))
+                        marker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here.").icon(customMarker))
                     }
 
                     //Store pickup location
@@ -272,11 +277,14 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     //Search entered drop location
     override fun searchDropLocation(dropLocation: String) {
 
+        val iconBitmap = BitmapFactory.decodeResource(resources, R.drawable.drop_marker)
+        val customMarker = BitmapDescriptorFactory.fromBitmap(iconBitmap)
+
         val address = locationUtils.searchDropLocation(dropLocation)!![0]
         val latLng = LatLng(address.latitude, address.longitude)
 
         //Adding a marker on the map
-        mMap.addMarker(MarkerOptions().position(latLng).title("Drop off"))
+        mMap.addMarker(MarkerOptions().position(latLng).title("Drop off").icon(customMarker))
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
 
         //Storing drop location in the view model
@@ -315,5 +323,6 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
                 // You can show a message or take appropriate action here
             }
         }
+
 
 }
