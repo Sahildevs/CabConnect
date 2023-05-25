@@ -52,6 +52,7 @@
                 android:drawablePadding="15dp"
                 android:textColorHint="@color/yellow"
                 android:maxLines="1"
+                android:letterSpacing="0.1"
                 style="@style/text_style_yellow_medium_text"/>
 
             <androidx.legacy.widget.Space
@@ -65,10 +66,12 @@
                 android:layout_marginHorizontal="20dp"
                 android:padding="10dp"
                 android:hint="Phone"
+                android:maxLength="10"
                 android:enabled="true"
                 android:drawableStart="@drawable/ic_phone"
                 android:drawablePadding="15dp"
                 android:textColorHint="@color/yellow"
+                android:letterSpacing="0.1"
                 android:background="@drawable/bg_edit_text_phone_no"
                 style="@style/text_style_yellow_medium_text"/>
 

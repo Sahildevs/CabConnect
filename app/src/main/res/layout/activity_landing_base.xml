@@ -37,8 +37,10 @@
                         android:layout_height="?attr/actionBarSize"
                         android:background="@color/yellow"
                         android:elevation="10dp"
-                        app:title="TAXI"
+                        app:title="CabConnect"
                         app:titleCentered="true"
+                        app:titleTextAppearance="@style/CustomAppBarTitle"
+                        app:titleMarginBottom="19dp"
                         app:navigationIcon="@drawable/hamburger" />
 
                 </com.google.android.material.appbar.AppBarLayout>
