@@ -15,19 +15,24 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.uberride.R
 import com.example.uberride.databinding.ActivityLandingBaseBinding
 import com.example.uberride.ui.onboarding.OnBoardingActivity
+import com.example.uberride.ui.onboarding.bottomsheets.NetworkConnectionBottomSheet
+import com.example.uberride.utils.NetworkUtils
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LandingBaseActivity : AppCompatActivity() {
+class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
 
     lateinit var binding: ActivityLandingBaseBinding
+    lateinit var networkUtils: NetworkUtils
 
     lateinit var navController: NavController
     lateinit var appBarConfiguration: AppBarConfiguration
     lateinit var auth: FirebaseAuth
+
+    private var networkConnectionBottomSheet: NetworkConnectionBottomSheet? = null
 
     //ACCESSING VIEWS FROM LAYOUT
     private val actionbar : MaterialToolbar
@@ -51,6 +56,11 @@ class LandingBaseActivity : AppCompatActivity() {
 
         binding = ActivityLandingBaseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //Initialized network utils
+        networkUtils = NetworkUtils(this)
+
+        networkConnectionBottomSheet = NetworkConnectionBottomSheet()
 
         retrieveBundle()
 
@@ -101,10 +111,22 @@ class LandingBaseActivity : AppCompatActivity() {
             }
             true
         }
-
-
-
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        //Register broadcast receiver to listen network state
+        networkUtils.registerBroadcastReceiver(this, networkUtils)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        //Unregister broadcast receiver
+        networkUtils.unRegisterBroadcastReceiver(this, networkUtils)
+    }
+
 
     //Retrieve the bundle passed from the onboarding activity
     private fun retrieveBundle() {
@@ -115,6 +137,12 @@ class LandingBaseActivity : AppCompatActivity() {
             landingViewModel.name = bundle.getString("NAME")
             landingViewModel.phone = bundle.getString("PHONE")
         }
+
+    }
+
+    private fun showConnectionBottomSheet() {
+        networkConnectionBottomSheet!!.show(supportFragmentManager, null)
+        networkConnectionBottomSheet!!.isCancelable = false
 
     }
 
@@ -129,5 +157,20 @@ class LandingBaseActivity : AppCompatActivity() {
             Toast.makeText(this, "Press back again to exit.", Toast.LENGTH_LONG).show()
         }
         backPressedTime = System.currentTimeMillis()
+    }
+
+    override fun networkState(available: Boolean) {
+
+        val isBottomSheetOpen = networkConnectionBottomSheet!!.isAdded && !networkConnectionBottomSheet!!.isHidden
+
+        if (!available && !isBottomSheetOpen) {
+            showConnectionBottomSheet()
+        }
+        else if (available && isBottomSheetOpen) {
+            //Dismiss bottom sheet only if the network is available and bottom sheet is not hidden
+            networkConnectionBottomSheet!!.dismiss()
+        }
+
+
     }
 }
