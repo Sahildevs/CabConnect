@@ -68,6 +68,7 @@ class NearbyCabListBottomSheet(private val callback: Callback,private var list: 
 
     override fun selectedCab(data: CabData, position: Int) {
         landingViewModel.carId = data.id
+        landingViewModel.driverId = data.drivers_id
         if (data.isSelected) {
             binding.btnBookCab.isEnabled = true
         }

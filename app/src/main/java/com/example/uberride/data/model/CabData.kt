@@ -22,7 +22,7 @@ data class CabData(
     @SerializedName("state")
     val state: String,
 
-    @SerializedName("driver_id")
+    @SerializedName("drivers_id")
     val drivers_id: Int,
 
     @SerializedName("driver")

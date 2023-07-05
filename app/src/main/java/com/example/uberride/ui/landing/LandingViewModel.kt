@@ -9,6 +9,7 @@ import com.example.uberride.data.model.DropLocationData
 import com.example.uberride.data.model.PickupLocationData
 import com.example.uberride.data.model.NearbyCabsResponse
 import com.example.uberride.data.repository.MainRepository
+import com.example.uberride.utils.FirebaseUtils
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Response
@@ -27,10 +28,11 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
 
     /** Book cab details */
     var carId: Int? = null
+    var driverId: Int? = null
     var dropLat: Double? = null
     var dropLng: Double? = null
 
-
+    private val firebaseUtils = FirebaseUtils()
 
     private val _responseNearbyCabs = MutableLiveData<Response<NearbyCabsResponse>>()
     val responseNearbyCabs: LiveData<Response<NearbyCabsResponse>> = _responseNearbyCabs
@@ -64,6 +66,15 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
 
         val res = repository.bookMyCab(request)
         _responseBookMyCab.postValue(res)
+    }
+
+    /** Add ride request firebase service call */
+    fun addRideRequest() {
+        firebaseUtils.addRideRequest(
+            driverId = driverId.toString(),
+            onSuccess = {},
+            onFailed = {}
+        )
     }
 
 

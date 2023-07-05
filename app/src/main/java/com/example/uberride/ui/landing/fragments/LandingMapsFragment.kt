@@ -27,6 +27,7 @@ import com.example.uberride.ui.landing.LandingViewModel
 import com.example.uberride.ui.landing.bottomsheets.AddDropLocationBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.NearbyCabListBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.RequestProcessingBottomSheet
+import com.example.uberride.utils.FirebaseUtils
 import com.example.uberride.utils.LocationUtils
 import com.google.android.gms.location.*
 
@@ -103,6 +104,9 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         lifecycleScope.launch {
             landingViewModel.bookMyCabServiceCall()
         }
+
+        //Firebase service call
+        landingViewModel.addRideRequest()
     }
 
 
@@ -127,8 +131,8 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         landingViewModel.responseBookMyCab.observe(viewLifecycleOwner) { result->
 
             if (result != null) {
-
                 Log.d("BOOKING", "${result.body()?.status}")
+
             }
 
         }
