@@ -70,8 +70,12 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
 
     /** Add ride request firebase service call */
     fun addRideRequest() {
+        val map = mutableMapOf<String, String>()
+        map["status"] = "REQUESTED"
+
         firebaseUtils.addRideRequest(
             driverId = driverId.toString(),
+            map = map,
             onSuccess = {},
             onFailed = {}
         )

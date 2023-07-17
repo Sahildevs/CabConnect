@@ -26,6 +26,8 @@ import com.example.uberride.databinding.FragmentLandingMapsBinding
 import com.example.uberride.ui.landing.LandingViewModel
 import com.example.uberride.ui.landing.bottomsheets.AddDropLocationBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.NearbyCabListBottomSheet
+import com.example.uberride.ui.landing.bottomsheets.RequestAcceptedBottomSheet
+import com.example.uberride.ui.landing.bottomsheets.RequestDeniedBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.RequestProcessingBottomSheet
 import com.example.uberride.utils.FirebaseUtils
 import com.example.uberride.utils.LocationUtils
@@ -39,6 +41,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -50,9 +53,14 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private lateinit var locationUtils: LocationUtils
     private lateinit var mMap: GoogleMap
 
+    private lateinit var firebaseUtils: FirebaseUtils
+    private lateinit var listenerRegistration: ListenerRegistration
+
     private lateinit var addDropLocationBottomSheet: AddDropLocationBottomSheet
     private lateinit var nearbyCabListBottomSheet: NearbyCabListBottomSheet
     private lateinit var requestProcessingBottomSheet: RequestProcessingBottomSheet
+    private lateinit var requestAcceptedBottomSheet: RequestAcceptedBottomSheet
+    private lateinit var requestDeniedBottomSheet: RequestDeniedBottomSheet
 
     private val landingViewModel: LandingViewModel by activityViewModels()
 
@@ -61,6 +69,9 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
         //This class handles all location related operation
         locationUtils = LocationUtils(requireContext())
+
+        //This class handles all firebase operations
+        firebaseUtils = FirebaseUtils()
 
     }
 
@@ -107,6 +118,8 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
         //Firebase service call
         landingViewModel.addRideRequest()
+
+        startListeningRequestedRideStatus()
     }
 
 
@@ -173,9 +186,34 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         requestProcessingBottomSheet.isCancelable = false
     }
 
+    private fun showRideRequestAcceptedBottomSheet() {
+        requestAcceptedBottomSheet = RequestAcceptedBottomSheet()
+        requestAcceptedBottomSheet.show(childFragmentManager, null)
+        requestAcceptedBottomSheet.isCancelable = false
+    }
+
+    private fun showRideRequestRejectedBottomSheet() {
+        requestDeniedBottomSheet = RequestDeniedBottomSheet()
+        requestDeniedBottomSheet.show(childFragmentManager, null)
+        requestDeniedBottomSheet.isCancelable = false
+    }
 
 
 
+
+
+    //Listens to the drivers response on your ride request
+    private fun startListeningRequestedRideStatus() {
+        listenerRegistration = firebaseUtils.getRequestedRideStatus(
+            driverId = landingViewModel.driverId.toString(),
+            status = { status ->
+                when(status) {
+                    "accepted" -> showRideRequestAcceptedBottomSheet()
+                    "rejected" -> showRideRequestRejectedBottomSheet()
+                }
+            }
+        )
+    }
 
 
 

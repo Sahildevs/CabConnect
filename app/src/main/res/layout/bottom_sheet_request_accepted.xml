@@ -22,7 +22,7 @@
             android:textAlignment="center"
             style="@style/text_style_subtitle_text" />
 
-        <Space
+        <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="10dp"/>
 
@@ -33,19 +33,19 @@
             android:textAlignment="center"
             style="@style/text_style_body_text" />
 
-        <Space
+        <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="27dp"/>
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/anim_loading"
+            android:id="@+id/anim_accepted"
             android:layout_width="105dp"
             android:layout_height="105dp"
             android:layout_gravity="center"
             app:lottie_fileName="accepted.json"
-            app:lottie_loop="true" />
+            app:lottie_loop="false" />
 
-        <Space
+        <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="27dp"/>
 
