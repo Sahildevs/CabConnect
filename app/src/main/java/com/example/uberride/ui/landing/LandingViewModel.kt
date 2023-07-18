@@ -32,6 +32,14 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
     var dropLat: Double? = null
     var dropLng: Double? = null
 
+    /** Booked cab details */
+    var driverName: String? = null
+    var driverPhone: String? = null
+    var carModel: String? = null
+    var numberPlate: String? = null
+    var carImage: String? = null
+
+
     private val firebaseUtils = FirebaseUtils()
 
     private val _responseNearbyCabs = MutableLiveData<Response<NearbyCabsResponse>>()

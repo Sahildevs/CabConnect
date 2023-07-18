@@ -14,10 +14,12 @@ import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.uberride.R
@@ -25,6 +27,7 @@ import com.example.uberride.data.model.CabData
 import com.example.uberride.databinding.FragmentLandingMapsBinding
 import com.example.uberride.ui.landing.LandingViewModel
 import com.example.uberride.ui.landing.bottomsheets.AddDropLocationBottomSheet
+import com.example.uberride.ui.landing.bottomsheets.BookedCabDetailsBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.NearbyCabListBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.RequestAcceptedBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.RequestDeniedBottomSheet
@@ -43,6 +46,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -61,6 +65,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private lateinit var requestProcessingBottomSheet: RequestProcessingBottomSheet
     private lateinit var requestAcceptedBottomSheet: RequestAcceptedBottomSheet
     private lateinit var requestDeniedBottomSheet: RequestDeniedBottomSheet
+    private lateinit var bookedCabDetailsBottomSheet: BookedCabDetailsBottomSheet
 
     private val landingViewModel: LandingViewModel by activityViewModels()
 
@@ -162,6 +167,10 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
             showAddDropLocationBottomSheet()
         }
 
+        binding.fabCabDetails.setOnClickListener {
+            showBookedCabDetailsBottomSheet()
+        }
+
     }
 
 
@@ -186,10 +195,13 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         requestProcessingBottomSheet.isCancelable = false
     }
 
-    private fun showRideRequestAcceptedBottomSheet() {
+    private suspend fun showRideRequestAcceptedBottomSheet() {
         requestAcceptedBottomSheet = RequestAcceptedBottomSheet()
         requestAcceptedBottomSheet.show(childFragmentManager, null)
         requestAcceptedBottomSheet.isCancelable = false
+        delay(3000)
+        requestAcceptedBottomSheet.dismiss()
+        showBookedCabDetailsBottomSheet()
     }
 
     private fun showRideRequestRejectedBottomSheet() {
@@ -199,6 +211,12 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     }
 
 
+    private fun showBookedCabDetailsBottomSheet() {
+        bookedCabDetailsBottomSheet = BookedCabDetailsBottomSheet()
+        bookedCabDetailsBottomSheet.show(childFragmentManager, null)
+        bookedCabDetailsBottomSheet.isCancelable = false
+        binding.fabCabDetails.isVisible = true
+    }
 
 
 
@@ -208,8 +226,17 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
             driverId = landingViewModel.driverId.toString(),
             status = { status ->
                 when(status) {
-                    "accepted" -> showRideRequestAcceptedBottomSheet()
-                    "rejected" -> showRideRequestRejectedBottomSheet()
+                    "accepted" -> {
+                        lifecycleScope.launch {
+                            requestProcessingBottomSheet.dismiss()
+                            binding.fabSearch.isVisible = false
+                            showRideRequestAcceptedBottomSheet()
+                        }
+                    }
+                    "rejected" -> {
+                        requestProcessingBottomSheet.dismiss()
+                        showRideRequestRejectedBottomSheet()
+                    }
                 }
             }
         )

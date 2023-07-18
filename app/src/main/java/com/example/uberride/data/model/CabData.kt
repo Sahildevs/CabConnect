@@ -11,7 +11,7 @@ data class CabData(
     val model: String,
 
     @SerializedName("number")
-    val number: String,
+    val numberPlate: String,
 
     @SerializedName("image")
     val image: String,
