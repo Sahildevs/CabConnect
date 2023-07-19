@@ -11,6 +11,7 @@ import com.example.uberride.data.model.NearbyCabsResponse
 import com.example.uberride.data.repository.MainRepository
 import com.example.uberride.utils.FirebaseUtils
 import com.google.gson.Gson
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Response
 import javax.inject.Inject
@@ -62,6 +63,7 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
 
     }
 
+
     /** Book cab service call */
     suspend fun bookMyCabServiceCall() {
 
@@ -76,6 +78,7 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
         _responseBookMyCab.postValue(res)
     }
 
+
     /** Add ride request firebase service call */
     fun addRideRequest() {
         val map = mutableMapOf<String, String>()
@@ -88,7 +91,6 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
             onFailed = {}
         )
     }
-
 
 
 

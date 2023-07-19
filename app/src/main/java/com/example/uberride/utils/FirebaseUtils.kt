@@ -1,7 +1,10 @@
 package com.example.uberride.utils
 
+import android.util.Log
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import kotlin.math.ln
 
 class FirebaseUtils {
 
@@ -33,6 +36,32 @@ class FirebaseUtils {
                 }
 
             }
+        }
+    }
+
+
+    //Get the booked cab location live coordinates
+    fun getBookedCabLocation(driverId: String, latLng: (LatLng) -> Unit): ListenerRegistration {
+        val collectionRef = db.collection("Active Drivers")
+        val documentRef = collectionRef.document(driverId)
+
+        //The addSnapshotListener function on the documentRef to register a listener that will be triggered
+        // whenever there are changes to the document
+        return documentRef.addSnapshotListener { documentSnapshot, error ->
+            if (documentSnapshot != null ) {
+
+                Log.d("Cordinates", "*******************${documentSnapshot["Lat"]}")
+
+                val lat: String = documentSnapshot["Lat"].toString()
+                val lng: String = documentSnapshot["Lng"].toString()
+
+                //convert the location coordinates to latLng
+                val latLng = LatLng(lat.toDouble(), lng.toDouble())
+
+                latLng(latLng)
+
+            }
+
         }
     }
 }

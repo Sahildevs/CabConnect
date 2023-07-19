@@ -2,23 +2,19 @@ package com.example.uberride.ui.landing.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -57,8 +53,12 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private lateinit var locationUtils: LocationUtils
     private lateinit var mMap: GoogleMap
 
+    private var pickupMarker: Marker? = null
+    private var cabMarker: Marker? = null
+
     private lateinit var firebaseUtils: FirebaseUtils
     private lateinit var listenerRegistration: ListenerRegistration
+    private lateinit var locationRegistration: ListenerRegistration
 
     private lateinit var addDropLocationBottomSheet: AddDropLocationBottomSheet
     private lateinit var nearbyCabListBottomSheet: NearbyCabListBottomSheet
@@ -147,12 +147,9 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
 
         landingViewModel.responseBookMyCab.observe(viewLifecycleOwner) { result->
-
             if (result != null) {
                 Log.d("BOOKING", "${result.body()?.status}")
-
             }
-
         }
 
     }
@@ -202,12 +199,14 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         delay(3000)
         requestAcceptedBottomSheet.dismiss()
         showBookedCabDetailsBottomSheet()
+
     }
 
     private fun showRideRequestRejectedBottomSheet() {
         requestDeniedBottomSheet = RequestDeniedBottomSheet()
         requestDeniedBottomSheet.show(childFragmentManager, null)
         requestDeniedBottomSheet.isCancelable = false
+
     }
 
 
@@ -216,6 +215,8 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         bookedCabDetailsBottomSheet.show(childFragmentManager, null)
         bookedCabDetailsBottomSheet.isCancelable = false
         binding.fabCabDetails.isVisible = true
+        trackBookedCab()
+
     }
 
 
@@ -227,14 +228,15 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
             status = { status ->
                 when(status) {
                     "accepted" -> {
-                        lifecycleScope.launch {
-                            requestProcessingBottomSheet.dismiss()
-                            binding.fabSearch.isVisible = false
-                            showRideRequestAcceptedBottomSheet()
-                        }
+                        requestProcessingBottomSheet.dismiss()
+                        stopListeningRequestedRideStatus()
+                        binding.fabSearch.isVisible = false
+                        lifecycleScope.launch { showRideRequestAcceptedBottomSheet() }
+
                     }
                     "rejected" -> {
                         requestProcessingBottomSheet.dismiss()
+                        stopListeningRequestedRideStatus()
                         showRideRequestRejectedBottomSheet()
                     }
                 }
@@ -242,7 +244,31 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         )
     }
 
+    //Unregister the firestore document listener
+    private fun stopListeningRequestedRideStatus() {
+        listenerRegistration.remove()
+    }
 
+
+    //Track the live location of the booked cab
+    private fun trackBookedCab() {
+
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cab_track_marker)
+        val bitmap = drawable?.toBitmap()
+
+        locationRegistration = firebaseUtils.getBookedCabLocation(
+            driverId = landingViewModel.driverId.toString(),
+            latLng = {
+                Log.d("Cordinates", "LatLng: $it")
+
+                //Remove previously added marker, if any
+                cabMarker?.remove()
+                //Add a marker
+                cabMarker = mMap.addMarker(MarkerOptions().position(it).title("Cab").icon(BitmapDescriptorFactory.fromBitmap(bitmap!!)))
+            }
+        )
+
+    }
 
 
 
@@ -319,16 +345,16 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
                 if (location != null) {
                     //Handle last known location
 
+                    val latLng = LatLng(location.latitude, location.longitude)
+
                     val iconBitmap = BitmapFactory.decodeResource(resources, R.drawable.pickup_marker)
                     val customMarker = BitmapDescriptorFactory.fromBitmap(iconBitmap)
 
+                    //Remove previously added marker, if any
+                    pickupMarker?.remove()
                     //Add a marker
-                    val latLng = LatLng(location.latitude, location.longitude)
-                    var marker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here.").icon(customMarker))
-                    if (marker != null) {
-                        mMap.clear()
-                        marker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here.").icon(customMarker))
-                    }
+                    pickupMarker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here.").icon(customMarker))
+
 
                     //Store pickup location
                     landingViewModel.pickUpLat = location.latitude
