@@ -59,12 +59,12 @@
             android:layout_height="16dp"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_book_cab"
+            android:id="@+id/btn_other_nearby_cabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:backgroundTint="@color/yellow"
             android:text="see other nearby cars"
-            android:enabled="false"
+            android:enabled="true"
             style="@style/button_style_default_button" />
 
 

@@ -11,9 +11,10 @@ import com.example.uberride.databinding.BottomSheetRequestDeniedBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 
-class RequestDeniedBottomSheet : BottomSheetDialogFragment() {
+class RequestDeniedBottomSheet(private val callback: Callback) : BottomSheetDialogFragment() {
 
     lateinit var binding: BottomSheetRequestDeniedBinding
+
     private lateinit var animationView: LottieAnimationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,12 +36,20 @@ class RequestDeniedBottomSheet : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         showAnim()
+
+        binding.btnOtherNearbyCabs.setOnClickListener {
+            callback.getOtherNearbyCabs()
+        }
     }
 
     private fun showAnim() {
         animationView = binding.animDenied
         animationView.setAnimation("denied.json")
         animationView.playAnimation()
+    }
+
+    interface Callback {
+        fun getOtherNearbyCabs()
     }
 
 

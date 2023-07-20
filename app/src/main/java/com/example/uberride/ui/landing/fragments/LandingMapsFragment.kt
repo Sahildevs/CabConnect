@@ -46,7 +46,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, NearbyCabListBottomSheet.Callback {
+class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, NearbyCabListBottomSheet.Callback,
+    RequestDeniedBottomSheet.Callback {
 
     lateinit var binding: FragmentLandingMapsBinding
 
@@ -133,9 +134,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private fun serviceObserver() {
 
         landingViewModel.responseNearbyCabs.observe(viewLifecycleOwner) { result ->
-
             if (result.body() != null) {
-
                 Log.d("CABS", "${result.body()!!.cabs}")
                 showNearbyCabBottomSheet(result.body()!!.cabs)
             }
@@ -203,7 +202,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     }
 
     private fun showRideRequestRejectedBottomSheet() {
-        requestDeniedBottomSheet = RequestDeniedBottomSheet()
+        requestDeniedBottomSheet = RequestDeniedBottomSheet(this)
         requestDeniedBottomSheet.show(childFragmentManager, null)
         requestDeniedBottomSheet.isCancelable = false
 
@@ -214,7 +213,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         bookedCabDetailsBottomSheet = BookedCabDetailsBottomSheet()
         bookedCabDetailsBottomSheet.show(childFragmentManager, null)
         bookedCabDetailsBottomSheet.isCancelable = false
-        binding.fabCabDetails.isVisible = true
+        binding.layoutFabCabDetails.isVisible = true
         trackBookedCab()
 
     }
@@ -230,7 +229,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
                     "accepted" -> {
                         requestProcessingBottomSheet.dismiss()
                         stopListeningRequestedRideStatus()
-                        binding.fabSearch.isVisible = false
+                        binding.layoutFabSearch.isVisible = false
                         lifecycleScope.launch { showRideRequestAcceptedBottomSheet() }
 
                     }
@@ -269,6 +268,18 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         )
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -403,6 +414,12 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
     }
 
+    //Get other nearby cabs when request denied
+    override fun getOtherNearbyCabs() {
+        getNearbyCabs()
+        requestDeniedBottomSheet.dismiss()
+    }
+
 
 
     //Checks permission grant result
@@ -418,6 +435,8 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
                 // You can show a message or take appropriate action here
             }
         }
+
+
 
 
 }
