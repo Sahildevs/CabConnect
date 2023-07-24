@@ -22,18 +22,18 @@
             android:textAlignment="center"
             style="@style/text_style_subtitle_text" />
 
-        <Space
+        <androidx.legacy.widget.Space
             android:layout_width="match_parent"
-            android:layout_height="10dp"/>
+            android:layout_height="5dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Once your request is excepted by the cab driver the ride will start automatically"
+            android:text="Waiting for cab drivers response."
             android:textAlignment="center"
             style="@style/text_style_body_text" />
 
-        <Space
+        <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="27dp"/>
 
@@ -45,7 +45,7 @@
             app:lottie_fileName="loading.json"
             app:lottie_loop="true" />
 
-        <Space
+        <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="27dp"/>
 

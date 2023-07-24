@@ -48,17 +48,14 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_launcher_background" />
 
-                <androidx.legacy.widget.Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical" />
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginStart="16dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -191,7 +188,7 @@
 
             <androidx.legacy.widget.Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:layout_height="16dp" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"

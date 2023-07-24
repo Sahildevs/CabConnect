@@ -24,7 +24,7 @@
 
         <androidx.legacy.widget.Space
             android:layout_width="wrap_content"
-            android:layout_height="20dp"/>
+            android:layout_height="16dp"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -56,7 +56,7 @@
 
         <androidx.legacy.widget.Space
             android:layout_width="match_parent"
-            android:layout_height="20dp"/>
+            android:layout_height="16dp"/>
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:backgroundTint="@color/yellow"
-            android:text="send ride request"
+            android:text="preview drop location"
             android:enabled="true"
             android:drawableEnd="@drawable/ic_next"
             style="@style/button_style_default_button" />

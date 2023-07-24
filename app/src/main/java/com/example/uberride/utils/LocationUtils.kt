@@ -2,13 +2,15 @@ package com.example.uberride.utils
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 
 class LocationUtils(private val context: Context) {
 
@@ -101,6 +103,31 @@ class LocationUtils(private val context: Context) {
         addressList = geocoder.getFromLocationName(location, 1)
         return addressList
 
+    }
+
+
+    //Function to calculate the distance between the cab and the pickup/drop location
+    private fun calculateDistance(point1: LatLng, point2: LatLng): Double {
+
+        val distance = SphericalUtil.computeDistanceBetween(point1, point2)
+        return distance
+
+    }
+
+
+    //Function to check if the cab has arrived/reached at the pickup/drop location
+    fun hasCabArrived(cabLocation:LatLng, dropLocation:LatLng): Boolean {
+
+        //Define the arrival threshold in kilometers/meters
+        val arrivalThreshold = 2.0 //2 meters
+        val distance = calculateDistance(point1 = cabLocation, point2 = dropLocation)
+
+        Log.d("ARRIVED", "--------Threshold: $arrivalThreshold")
+        Log.d("ARRIVED", "--------Distance: $distance")
+
+        //Returns true if the calculated distance is equal or less than the reachedThreshold, cab reached
+        //reachedThreshold is the maximum allowed distance for the cab to be considered as arrived
+        return distance <= arrivalThreshold
     }
 
 

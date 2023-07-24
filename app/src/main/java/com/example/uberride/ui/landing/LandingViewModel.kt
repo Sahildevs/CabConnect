@@ -40,6 +40,10 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
     var numberPlate: String? = null
     var carImage: String? = null
 
+    var cabCurrentLocation: LatLng? = null
+
+    var isDestinationArrived: Boolean = false
+
 
     private val firebaseUtils = FirebaseUtils()
 

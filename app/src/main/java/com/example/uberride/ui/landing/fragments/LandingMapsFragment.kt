@@ -24,6 +24,7 @@ import com.example.uberride.databinding.FragmentLandingMapsBinding
 import com.example.uberride.ui.landing.LandingViewModel
 import com.example.uberride.ui.landing.bottomsheets.AddDropLocationBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.BookedCabDetailsBottomSheet
+import com.example.uberride.ui.landing.bottomsheets.DestinationReachedBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.NearbyCabListBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.RequestAcceptedBottomSheet
 import com.example.uberride.ui.landing.bottomsheets.RequestDeniedBottomSheet
@@ -47,7 +48,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, NearbyCabListBottomSheet.Callback,
-    RequestDeniedBottomSheet.Callback {
+    RequestDeniedBottomSheet.Callback, DestinationReachedBottomSheet.Callback {
 
     lateinit var binding: FragmentLandingMapsBinding
 
@@ -55,6 +56,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private lateinit var mMap: GoogleMap
 
     private var pickupMarker: Marker? = null
+    private var dropMarker: Marker? = null
     private var cabMarker: Marker? = null
 
     private lateinit var firebaseUtils: FirebaseUtils
@@ -67,6 +69,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private lateinit var requestAcceptedBottomSheet: RequestAcceptedBottomSheet
     private lateinit var requestDeniedBottomSheet: RequestDeniedBottomSheet
     private lateinit var bookedCabDetailsBottomSheet: BookedCabDetailsBottomSheet
+    private lateinit var destinationReachedBottomSheet: DestinationReachedBottomSheet
 
     private val landingViewModel: LandingViewModel by activityViewModels()
 
@@ -158,7 +161,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     private fun onClick() {
 
         binding.fabSearch.setOnClickListener {
-            stopLocationUpdates()
+            //stopLocationUpdates()
             getLastKnownLocation()
             showAddDropLocationBottomSheet()
         }
@@ -214,7 +217,14 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         bookedCabDetailsBottomSheet.show(childFragmentManager, null)
         bookedCabDetailsBottomSheet.isCancelable = false
         binding.layoutFabCabDetails.isVisible = true
-        trackBookedCab()
+        startTrackingBookedCab()
+
+    }
+
+    private fun showDestinationReachedBottomSheet() {
+        destinationReachedBottomSheet = DestinationReachedBottomSheet(this)
+        destinationReachedBottomSheet.show(childFragmentManager, null)
+        destinationReachedBottomSheet.isCancelable = false
 
     }
 
@@ -249,8 +259,8 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     }
 
 
-    //Track the live location of the booked cab
-    private fun trackBookedCab() {
+    //Start tracking the live location of the booked cab
+    private fun startTrackingBookedCab() {
 
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cab_track_marker)
         val bitmap = drawable?.toBitmap()
@@ -258,21 +268,75 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         locationRegistration = firebaseUtils.getBookedCabLocation(
             driverId = landingViewModel.driverId.toString(),
             latLng = {
+                //Receiving the current/live lat lng coordinates of the cab
+
                 Log.d("Cordinates", "LatLng: $it")
+                landingViewModel.cabCurrentLocation = it
 
                 //Remove previously added marker, if any
                 cabMarker?.remove()
                 //Add a marker
                 cabMarker = mMap.addMarker(MarkerOptions().position(it).title("Cab").icon(BitmapDescriptorFactory.fromBitmap(bitmap!!)))
+
+                hasCabArrived()
             }
         )
+    }
 
+
+    //Stop tracking the location of the booked cab
+    private fun stopTrackingBookedCab() {
+        locationRegistration.remove()
+    }
+
+
+    //Checks if the cab has reached the destination point
+    private fun hasCabArrived() {
+
+        val hasCabArrived = locationUtils.hasCabArrived(
+            cabLocation = landingViewModel.cabCurrentLocation!!,
+            dropLocation = LatLng(landingViewModel.dropLat!!, landingViewModel.dropLng!!)
+        )
+
+        if (hasCabArrived && !landingViewModel.isDestinationArrived) {
+
+            showDestinationReachedBottomSheet()
+        }
     }
 
 
 
 
 
+
+
+
+    //Book cab request
+    override fun requestCab() {
+
+        bookMyCab()
+        nearbyCabListBottomSheet.dismiss()
+        showLoadingBottomSheet()
+
+    }
+
+    //Get other nearby cabs when request denied
+    override fun getOtherNearbyCabs() {
+        getNearbyCabs()
+        requestDeniedBottomSheet.dismiss()
+    }
+
+    //Finish trip
+    override fun finishTrip() {
+        pickupMarker?.remove()
+        dropMarker?.remove()
+        cabMarker?.remove()
+        stopTrackingBookedCab()
+        binding.layoutFabCabDetails.isVisible = false
+        binding.layoutFabSearch.isVisible = true
+        destinationReachedBottomSheet.dismiss()
+
+    }
 
 
 
@@ -333,7 +397,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
                 //Handle location updates
 
                 val latLng = LatLng(location.latitude, location.longitude)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
             }
         })
 
@@ -389,9 +453,12 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         val address = locationUtils.searchDropLocation(dropLocation)!![0]
         val latLng = LatLng(address.latitude, address.longitude)
 
-        //Adding a marker on the map
-        mMap.addMarker(MarkerOptions().position(latLng).title("Drop off").icon(customMarker))
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+        //Remove previously added marker if any
+        dropMarker?.remove()
+
+        //Adding a new marker on the map
+        dropMarker = mMap.addMarker(MarkerOptions().position(latLng).title("Drop off").icon(customMarker))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
 
         //Storing drop location in the view model
         landingViewModel.dropLat = address.latitude
@@ -404,21 +471,6 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
     }
 
-
-    //Book cab request
-    override fun requestCab() {
-
-        bookMyCab()
-        nearbyCabListBottomSheet.dismiss()
-        showLoadingBottomSheet()
-
-    }
-
-    //Get other nearby cabs when request denied
-    override fun getOtherNearbyCabs() {
-        getNearbyCabs()
-        requestDeniedBottomSheet.dismiss()
-    }
 
 
 
