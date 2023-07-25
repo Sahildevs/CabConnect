@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import java.io.IOException
 import kotlin.math.ln
 
 class FirebaseUtils {
@@ -33,6 +34,7 @@ class FirebaseUtils {
                 when(documentSnapshot["status"]) {
                     "ACCEPTED" -> status("accepted")
                     "REJECTED" -> status("rejected")
+                    "COMPLETED" -> status("completed")
                 }
 
             }
@@ -50,15 +52,26 @@ class FirebaseUtils {
         return documentRef.addSnapshotListener { documentSnapshot, error ->
             if (documentSnapshot != null ) {
 
-                Log.d("Cordinates", "*******************${documentSnapshot["Lat"]}")
+                try {
+                    Log.d("Cordinates", "*******************${documentSnapshot["Lat"]}")
 
-                val lat: String = documentSnapshot["Lat"].toString()
-                val lng: String = documentSnapshot["Lng"].toString()
+                    val lat: String = documentSnapshot["Lat"].toString()
+                    val lng: String = documentSnapshot["Lng"].toString()
 
-                //convert the location coordinates to latLng
-                val latLng = LatLng(lat.toDouble(), lng.toDouble())
+                    if (lat != "null" && lng != "null") {
 
-                latLng(latLng)
+                        //convert the location coordinates from string to latLng
+                        val cabLatLng = LatLng(lat.toDouble(), lng.toDouble())
+
+                        latLng(cabLatLng)
+                    }
+
+
+
+                }
+                catch (e: IOException) {
+                    Log.d("Crash", e.message.toString())
+                }
 
             }
 

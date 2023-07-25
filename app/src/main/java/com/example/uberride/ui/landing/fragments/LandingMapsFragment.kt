@@ -163,6 +163,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         binding.fabSearch.setOnClickListener {
             //stopLocationUpdates()
             getLastKnownLocation()
+            dropMarker?.remove()
             showAddDropLocationBottomSheet()
         }
 
@@ -238,15 +239,18 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
                 when(status) {
                     "accepted" -> {
                         requestProcessingBottomSheet.dismiss()
-                        stopListeningRequestedRideStatus()
+                        //stopListeningRequestedRideStatus()
                         binding.layoutFabSearch.isVisible = false
                         lifecycleScope.launch { showRideRequestAcceptedBottomSheet() }
-
                     }
                     "rejected" -> {
                         requestProcessingBottomSheet.dismiss()
                         stopListeningRequestedRideStatus()
                         showRideRequestRejectedBottomSheet()
+                    }
+                    "completed" -> {
+                        stopListeningRequestedRideStatus()
+                        stopTrackingBookedCab()
                     }
                 }
             }
@@ -301,11 +305,19 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         if (hasCabArrived && !landingViewModel.isDestinationArrived) {
 
             showDestinationReachedBottomSheet()
+            landingViewModel.isDestinationArrived = true
         }
     }
 
 
-
+    private fun resetDataToDefault() {
+        pickupMarker?.remove()
+        dropMarker?.remove()
+        cabMarker?.remove()
+        binding.layoutFabCabDetails.isVisible = false
+        binding.layoutFabSearch.isVisible = true
+        landingViewModel.isDestinationArrived = false
+    }
 
 
 
@@ -313,7 +325,6 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
     //Book cab request
     override fun requestCab() {
-
         bookMyCab()
         nearbyCabListBottomSheet.dismiss()
         showLoadingBottomSheet()
@@ -328,12 +339,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
     //Finish trip
     override fun finishTrip() {
-        pickupMarker?.remove()
-        dropMarker?.remove()
-        cabMarker?.remove()
-        stopTrackingBookedCab()
-        binding.layoutFabCabDetails.isVisible = false
-        binding.layoutFabSearch.isVisible = true
+        resetDataToDefault()
         destinationReachedBottomSheet.dismiss()
 
     }
@@ -451,23 +457,31 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         val customMarker = BitmapDescriptorFactory.fromBitmap(iconBitmap)
 
         val address = locationUtils.searchDropLocation(dropLocation)!![0]
-        val latLng = LatLng(address.latitude, address.longitude)
 
-        //Remove previously added marker if any
-        dropMarker?.remove()
+        if (address != null) {
 
-        //Adding a new marker on the map
-        dropMarker = mMap.addMarker(MarkerOptions().position(latLng).title("Drop off").icon(customMarker))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+            val latLng = LatLng(address.latitude, address.longitude)
 
-        //Storing drop location in the view model
-        landingViewModel.dropLat = address.latitude
-        landingViewModel.dropLng = address.longitude
+            //Remove previously added marker if any
+            dropMarker?.remove()
 
-        addDropLocationBottomSheet.dismiss()
+            //Adding a new marker on the map
+            dropMarker = mMap.addMarker(MarkerOptions().position(latLng).title("Drop off").icon(customMarker))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
 
-        //making a network call
-        getNearbyCabs()
+            //Storing drop location in the view model
+            landingViewModel.dropLat = address.latitude
+            landingViewModel.dropLng = address.longitude
+
+            addDropLocationBottomSheet.dismiss()
+
+            //making a network call
+            getNearbyCabs()
+        }
+        else {
+            Toast.makeText(requireContext(), "Address not found, Try Again!", Toast.LENGTH_SHORT).show()
+        }
+
 
     }
 

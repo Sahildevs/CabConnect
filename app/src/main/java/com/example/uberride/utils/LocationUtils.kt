@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
+import java.io.IOException
 
 class LocationUtils(private val context: Context) {
 
@@ -96,12 +97,18 @@ class LocationUtils(private val context: Context) {
     //Returns the lat lng for entered location
     fun searchDropLocation(location: String): List<Address>? {
 
-        //This will store all the matching addresses for the drop location
-        var addressList: List<Address>? = null
+        try {
+            //This will store all the matching addresses for the drop location
+            var addressList: List<Address>? = null
 
-        val geocoder = Geocoder(context)
-        addressList = geocoder.getFromLocationName(location, 1)
-        return addressList
+            val geocoder = Geocoder(context)
+            addressList = geocoder.getFromLocationName(location, 1)
+            return addressList
+        }
+        catch (e: IOException) {
+            return listOf()
+        }
+
 
     }
 
@@ -119,7 +126,7 @@ class LocationUtils(private val context: Context) {
     fun hasCabArrived(cabLocation:LatLng, dropLocation:LatLng): Boolean {
 
         //Define the arrival threshold in kilometers/meters
-        val arrivalThreshold = 2.0 //2 meters
+        val arrivalThreshold = 30.0 //30 meters
         val distance = calculateDistance(point1 = cabLocation, point2 = dropLocation)
 
         Log.d("ARRIVED", "--------Threshold: $arrivalThreshold")
