@@ -10,6 +10,7 @@ import com.example.uberride.data.model.PickupLocationData
 import com.example.uberride.data.model.NearbyCabsResponse
 import com.example.uberride.data.repository.MainRepository
 import com.example.uberride.utils.FirebaseUtils
+import com.example.uberride.utils.SharedPrefUtils
 import com.google.gson.Gson
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class LandingViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
+class LandingViewModel @Inject constructor(private val repository: MainRepository, private val sharedPrefUtils: SharedPrefUtils) : ViewModel() {
 
 
     /** User details */
@@ -97,5 +98,21 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
     }
 
 
+    //Retrieves data from SharedPreferences
+    fun getDataFromSharedPreferences() {
+
+        name = sharedPrefUtils.getData("NAME", "null")
+        phone = sharedPrefUtils.getData("PHONE", "null")
+        userId= sharedPrefUtils.getData("USER_ID", 0)
+
+
+
+    }
+
+    //Clears user stored data from SharedPreferences
+    fun clearSharedPreData() {
+        sharedPrefUtils.deleteData()
+
+    }
 
 }

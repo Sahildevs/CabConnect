@@ -16,6 +16,10 @@ import retrofit2.http.Query
 
 interface ApiService {
 
+    /** Check if user already exists */
+    @GET("user_exists")
+    suspend fun checkUserExists(@Query("phone_no") phone: Long): Response<AddNewUserResponse>
+
     /** Add new user */
     @POST("add_new_user")
     suspend fun addNewUser(@Body request: AddNewUserRequest): Response<AddNewUserResponse>

@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.uberride.R
 import com.example.uberride.databinding.FragmentUserdetailsBinding
 import com.example.uberride.ui.landing.LandingBaseActivity
 import com.example.uberride.ui.onboarding.OnboardingViewModel
@@ -84,33 +86,45 @@ class UserDetailsFragment : Fragment() {
     private fun serviceObserver() {
 
         onboardingViewModel.responseAddNewUser.observe(viewLifecycleOwner) { result->
-
             if (result.body() != null) {
-
                 Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
 
-                //Passing data to the next activity
-                val bundle = Bundle()
-                bundle.putString("NAME", onboardingViewModel.name)
-                bundle.putString("PHONE", onboardingViewModel.phoneNumber)
-                bundle.putInt("USER_ID", result.body()!!.user.id)
+                onboardingViewModel.userId = result.body()!!.user.id
+                onboardingViewModel.name = result.body()!!.user.name
+                onboardingViewModel.phoneNumber = result.body()!!.user.phone
 
-                val intent  = Intent(requireActivity(), LandingBaseActivity::class.java)
-                intent.putExtras(bundle)
-                startActivity(intent)
+                storeDataToSharedPreference()
+                navigateToLandingMain()
+
+//                //Passing data to the next activity
+//                val bundle = Bundle()
+//                bundle.putString("NAME", onboardingViewModel.name)
+//                bundle.putString("PHONE", onboardingViewModel.phoneNumber)
+//                bundle.putInt("USER_ID", result.body()!!.user.id)
+
+//                val intent  = Intent(requireActivity(), LandingBaseActivity::class.java)
+//                intent.putExtras(bundle)
+//                startActivity(intent)
 
             }
             else {
-
                 Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
 
             }
-
         }
+    }
 
 
+    //Add user details to shared preference
+    private fun storeDataToSharedPreference() {
+        onboardingViewModel.addDataToSharedPref()
 
     }
+
+    private fun navigateToLandingMain() {
+        findNavController().navigate(R.id.action_userDetailsFragment_to_landingBaseActivity)
+    }
+
 
 
 

@@ -40,7 +40,14 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnGetStart.setOnClickListener {
-            findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+
+            if (auth.currentUser != null) {
+                //If user already logged in/signed up
+                findNavController().navigate(R.id.action_splashFragment_to_landingBaseActivity)
+            }
+            else {
+                findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+            }
         }
     }
 

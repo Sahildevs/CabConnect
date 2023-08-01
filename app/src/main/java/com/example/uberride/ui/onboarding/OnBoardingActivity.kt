@@ -64,9 +64,7 @@ class OnBoardingActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
     override fun onStart() {
         super.onStart()
 
-        if (auth.currentUser != null) {
-            startActivity(Intent(this, LandingBaseActivity::class.java))
-        }
+
     }
 
     override fun onResume() {

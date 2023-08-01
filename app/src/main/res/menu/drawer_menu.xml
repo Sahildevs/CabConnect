@@ -6,12 +6,12 @@
 
         <item
             android:title="Profile"
-            android:id="@+id/explore"
+            android:id="@+id/profile"
              />
 
         <item
             android:title="Logout"
-            android:id="@+id/help" />
+            android:id="@+id/logout" />
 
 
 

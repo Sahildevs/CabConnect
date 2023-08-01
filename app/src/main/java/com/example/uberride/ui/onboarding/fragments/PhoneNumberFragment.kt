@@ -39,7 +39,6 @@ class PhoneNumberFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance() //Initialised firebase auth
 
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,6 +93,9 @@ class PhoneNumberFragment : Fragment() {
         }
     }
 
+
+
+
     /** Call backs to handle result of the verify phone number request */
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -107,7 +109,7 @@ class PhoneNumberFragment : Fragment() {
                  user action.
              */
 
-            signInWithPhoneAuthCredential(credential)
+            //signInWithPhoneAuthCredential(credential)
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
@@ -133,13 +135,14 @@ class PhoneNumberFragment : Fragment() {
             // Save verification ID and resending token so we can use them later
 
             binding.loader.visibility = View.GONE
-
             Log.d("SENT", verificationId)
+
             /** Once the code has been successfully sent we will store the otp in the bundle and navigate to the otp screen and pass the bundle*/
             val bundle = Bundle()
             bundle.putString("OTP", verificationId)
             //bundle.putParcelable("RESEND_TOKEN", token)
-            bundle.putString("PHONE_NUMBER", pNumber)
+            bundle.putString("PHONE_NUMBER", binding.etPhone.text.toString())
+
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment, bundle)
 
         }

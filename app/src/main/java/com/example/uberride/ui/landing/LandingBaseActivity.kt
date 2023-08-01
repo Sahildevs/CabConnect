@@ -62,7 +62,7 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
 
         networkConnectionBottomSheet = NetworkConnectionBottomSheet()
 
-        retrieveBundle()
+        retrieveUserDataFromSharedPref()
 
         //Customized status bar
         window.statusBarColor = ContextCompat.getColor(this, R.color.yellow)
@@ -94,15 +94,18 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
         navDrawer.setNavigationItemSelectedListener {
             when(it.itemId){
 
-                R.id.explore -> {
+                R.id.profile -> {
                     Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show()
                     //drawerLayout.closeDrawer(Gravity.LEFT)
                 }
 
 
-                R.id.help -> {
+                R.id.logout -> {
                     Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show()
+
+                    landingViewModel.clearSharedPreData()
                     auth.signOut()
+
                     startActivity(Intent(this, OnBoardingActivity::class.java))
                     finish()
                 }
@@ -128,15 +131,9 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
     }
 
 
-    //Retrieve the bundle passed from the onboarding activity
-    private fun retrieveBundle() {
-        val bundle = intent.extras
-
-        if (bundle != null) {
-            landingViewModel.userId = bundle.getInt("USER_ID")
-            landingViewModel.name = bundle.getString("NAME")
-            landingViewModel.phone = bundle.getString("PHONE")
-        }
+    //Retrieve the user data stored in shared preference
+    private fun retrieveUserDataFromSharedPref() {
+        landingViewModel.getDataFromSharedPreferences()
 
     }
 
@@ -150,6 +147,7 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
 
     //When user presses back
     override fun onBackPressed() {
+
         if (backPressedTime + 3000 > System.currentTimeMillis()) {
             super.onBackPressed()
             finishAffinity()
@@ -157,7 +155,9 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
             Toast.makeText(this, "Press back again to exit.", Toast.LENGTH_LONG).show()
         }
         backPressedTime = System.currentTimeMillis()
+
     }
+
 
     override fun networkState(available: Boolean) {
 

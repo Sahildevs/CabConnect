@@ -12,6 +12,10 @@ import javax.inject.Inject
 class MainRepository @Inject constructor(private val apiService: ApiService) {
 
 
+    suspend fun checkUserExists(request: Long): Response<AddNewUserResponse> {
+        return apiService.checkUserExists(request)
+    }
+
     suspend fun addNewUser(request: AddNewUserRequest): Response<AddNewUserResponse> {
         return apiService.addNewUser(request)
     }

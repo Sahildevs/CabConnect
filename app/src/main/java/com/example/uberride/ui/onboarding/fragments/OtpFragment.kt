@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.uberride.R
 import com.example.uberride.databinding.FragmentRegisterBinding
@@ -18,6 +20,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -54,7 +57,15 @@ class OtpFragment : Fragment() {
 
         getBundleData()
         verifyOtp()
+        serviceObserver()
 
+    }
+
+    /** Service Call */
+    private fun checkUserExists() {
+        lifecycleScope.launch {
+            onboardingViewModel.checkUserExists()
+        }
     }
 
     private fun getBundleData() {
@@ -108,20 +119,56 @@ class OtpFragment : Fragment() {
         }
     }
 
+
+    private fun serviceObserver() {
+
+        onboardingViewModel.responseCheckUserExists.observe(viewLifecycleOwner, Observer { result ->
+            if (result.body()?.user != null) {
+                Toast.makeText(requireActivity(), "User Already Exists.", Toast.LENGTH_SHORT).show()
+
+                //Store user details in view model
+                onboardingViewModel.userId = result.body()!!.user.id
+                onboardingViewModel.name = result.body()!!.user.name
+                onboardingViewModel.phoneNumber = result.body()!!.user.phone
+
+                binding.loader2.visibility = View.GONE
+
+                storeDataToSharedPreference()
+                navigateToLandingMain()
+            }
+            else {
+                //Continue with registration flow
+                Toast.makeText(requireActivity(), "User Doesn't Exist.", Toast.LENGTH_SHORT).show()
+
+                findNavController().navigate(R.id.action_registerFragment_to_userDetailsFragment)
+            }
+
+        })
+    }
+
+
+    //Add user details to shared preference
+    private fun storeDataToSharedPreference() {
+        onboardingViewModel.addDataToSharedPref()
+
+    }
+
+    private fun navigateToLandingMain() {
+        findNavController().navigate(R.id.action_registerFragment_to_landingBaseActivity)
+    }
+
+
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
+                    Toast.makeText(requireActivity(), "Phone Verified", Toast.LENGTH_SHORT).show()
 
                     //Store verified phone number in view model
                     onboardingViewModel.phoneNumber = PHONE_NUMBER
 
-                    binding.loader2.visibility = View.GONE
-
-                    findNavController().navigate(R.id.action_registerFragment_to_userDetailsFragment)
-
-                    Toast.makeText(requireActivity(), "Verified", Toast.LENGTH_SHORT).show()
+                    checkUserExists()
 
 
                     //val user = task.result?.user

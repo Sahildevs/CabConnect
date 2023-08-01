@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/onboarding_nav_graph"
-    app:startDestination="@id/userDetailsFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -12,6 +12,11 @@
         <action
             android:id="@+id/action_splashFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_landingBaseActivity"
+            app:destination="@id/landingBaseActivity"
+            app:popUpTo="@id/landingBaseActivity"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -19,7 +24,8 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/registerFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -28,11 +34,27 @@
         <action
             android:id="@+id/action_registerFragment_to_userDetailsFragment"
             app:destination="@id/userDetailsFragment"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/userDetailsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_registerFragment_to_landingBaseActivity"
+            app:destination="@id/landingBaseActivity"
+            app:popUpTo="@id/landingBaseActivity"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/userDetailsFragment"
         android:name="com.example.uberride.ui.onboarding.fragments.UserDetailsFragment"
         android:label="fragment_userdetails"
-        tools:layout="@layout/fragment_userdetails" />
+        tools:layout="@layout/fragment_userdetails" >
+        <action
+            android:id="@+id/action_userDetailsFragment_to_landingBaseActivity"
+            app:destination="@id/landingBaseActivity"
+            app:popUpTo="@id/landingBaseActivity"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <activity
+        android:id="@+id/landingBaseActivity"
+        android:name="com.example.uberride.ui.landing.LandingBaseActivity"
+        android:label="LandingBaseActivity" />
 </navigation>
