@@ -1,4 +1,4 @@
-package com.example.uberride.ui.landing.adapters
+package com.example.uberride.ui.landing.home.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

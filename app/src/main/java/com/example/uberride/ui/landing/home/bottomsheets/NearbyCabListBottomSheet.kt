@@ -1,4 +1,4 @@
-package com.example.uberride.ui.landing.bottomsheets
+package com.example.uberride.ui.landing.home.bottomsheets
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +8,12 @@ import androidx.fragment.app.activityViewModels
 import com.example.uberride.data.model.CabData
 import com.example.uberride.databinding.BottomSheetNearbyCabListBinding
 import com.example.uberride.ui.landing.LandingViewModel
-import com.example.uberride.ui.landing.adapters.NearbyCabListAdapter
+import com.example.uberride.ui.landing.home.adapters.NearbyCabListAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NearbyCabListBottomSheet(private val callback: Callback,private var list: ArrayList<CabData>) :
+class NearbyCabListBottomSheet(private val callback: Callback, private var list: ArrayList<CabData>) :
     BottomSheetDialogFragment(), NearbyCabListAdapter.Callback {
 
     lateinit var binding: BottomSheetNearbyCabListBinding

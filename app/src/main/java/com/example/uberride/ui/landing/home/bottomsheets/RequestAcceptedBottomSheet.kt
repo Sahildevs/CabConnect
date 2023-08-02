@@ -1,4 +1,4 @@
-package com.example.uberride.ui.landing.bottomsheets
+package com.example.uberride.ui.landing.home.bottomsheets
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

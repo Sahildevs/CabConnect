@@ -1,4 +1,4 @@
-package com.example.uberride.ui.landing.fragments
+package com.example.uberride.ui.landing.home.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -22,13 +22,13 @@ import com.example.uberride.R
 import com.example.uberride.data.model.CabData
 import com.example.uberride.databinding.FragmentLandingMapsBinding
 import com.example.uberride.ui.landing.LandingViewModel
-import com.example.uberride.ui.landing.bottomsheets.AddDropLocationBottomSheet
-import com.example.uberride.ui.landing.bottomsheets.BookedCabDetailsBottomSheet
-import com.example.uberride.ui.landing.bottomsheets.DestinationReachedBottomSheet
-import com.example.uberride.ui.landing.bottomsheets.NearbyCabListBottomSheet
-import com.example.uberride.ui.landing.bottomsheets.RequestAcceptedBottomSheet
-import com.example.uberride.ui.landing.bottomsheets.RequestDeniedBottomSheet
-import com.example.uberride.ui.landing.bottomsheets.RequestProcessingBottomSheet
+import com.example.uberride.ui.landing.home.bottomsheets.AddDropLocationBottomSheet
+import com.example.uberride.ui.landing.home.bottomsheets.BookedCabDetailsBottomSheet
+import com.example.uberride.ui.landing.home.bottomsheets.DestinationReachedBottomSheet
+import com.example.uberride.ui.landing.home.bottomsheets.NearbyCabListBottomSheet
+import com.example.uberride.ui.landing.home.bottomsheets.RequestAcceptedBottomSheet
+import com.example.uberride.ui.landing.home.bottomsheets.RequestDeniedBottomSheet
+import com.example.uberride.ui.landing.home.bottomsheets.RequestProcessingBottomSheet
 import com.example.uberride.utils.FirebaseUtils
 import com.example.uberride.utils.LocationUtils
 import com.google.android.gms.location.*

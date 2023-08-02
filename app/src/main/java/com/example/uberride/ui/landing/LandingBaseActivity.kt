@@ -1,16 +1,19 @@
 package com.example.uberride.ui.landing
 
+
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.uberride.R
 import com.example.uberride.databinding.ActivityLandingBaseBinding
@@ -21,6 +24,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
@@ -75,7 +79,7 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
 
         appBarConfiguration = AppBarConfiguration.Builder(navController.graph).build()
 
-        //Defining top level destinations on which the action bar will be visible
+        //Defining top level destinations on which the action bar with menu will be visible
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.landingMapsFragment), drawerLayout
         )
@@ -84,10 +88,12 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
         setSupportActionBar(actionbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        //On hamburger clicked open the navigation drawer
-        actionbar.setNavigationOnClickListener {
-            drawerLayout.openDrawer(Gravity.LEFT)
-        }
+
+
+//        //On hamburger clicked open the navigation drawer
+//        actionbar.setNavigationOnClickListener {
+//            drawerLayout.openDrawer(Gravity.LEFT)
+//        }
 
 
         //Nav drawer menu item listener
@@ -96,7 +102,8 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
 
                 R.id.profile -> {
                     Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show()
-                    //drawerLayout.closeDrawer(Gravity.LEFT)
+                    navController.navigate(R.id.action_landingMapsFragment_to_userProfileFragment)
+                    drawerLayout.closeDrawer(Gravity.LEFT)
                 }
 
 
@@ -143,6 +150,12 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
 
     }
 
+
+    //This method is responsible for handling the navigation to the appropriate parent destination when the "up" button is pressed.
+    override fun onSupportNavigateUp(): Boolean {
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp()
+    }
 
 
     //When user presses back
