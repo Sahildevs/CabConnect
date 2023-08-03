@@ -32,15 +32,14 @@
                 android:text="WELCOME!"
                 style="@style/text_style_large_title_text" />
 
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="100dp" />
+
 
 
             <TextView
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Connecting you to your destination."
+                android:letterSpacing="0.02"
                 style="@style/text_style_yellow_medium_text" />
 
             <Space

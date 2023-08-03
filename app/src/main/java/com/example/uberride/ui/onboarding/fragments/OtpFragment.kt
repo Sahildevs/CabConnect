@@ -1,11 +1,14 @@
 package com.example.uberride.ui.onboarding.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -59,6 +62,12 @@ class OtpFragment : Fragment() {
         verifyOtp()
         serviceObserver()
 
+        setOtpTextWatcher(binding.etOtp1, binding.etOtp2)
+        setOtpTextWatcher(binding.etOtp2, binding.etOtp3)
+        setOtpTextWatcher(binding.etOtp3, binding.etOtp4)
+        setOtpTextWatcher(binding.etOtp4, binding.etOtp5)
+        setOtpTextWatcher(binding.etOtp5, binding.etOtp6)
+
     }
 
     /** Service Call */
@@ -73,7 +82,27 @@ class OtpFragment : Fragment() {
         OTP = arguments?.getString("OTP").toString()
         //RESEND_TOKEN = arguments?.getParcelable("Resend_token")!!
         PHONE_NUMBER = arguments?.getString("PHONE_NUMBER").toString()
+
+        onboardingViewModel.phoneNumber = PHONE_NUMBER
     }
+
+    //Responsible to automatically jup to the next edit text
+    private fun setOtpTextWatcher(currentEditText: EditText, nextEditText: EditText) {
+
+        currentEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s?.length == 1) {
+                    nextEditText.requestFocus()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+
+        })
+    }
+
 
     //Here we verify the user entered OTP
     private fun verifyOtp() {
@@ -124,7 +153,7 @@ class OtpFragment : Fragment() {
 
         onboardingViewModel.responseCheckUserExists.observe(viewLifecycleOwner, Observer { result ->
             if (result.body()?.user != null) {
-                Toast.makeText(requireActivity(), "User Already Exists.", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireActivity(), "User Already Exists.", Toast.LENGTH_SHORT).show()
 
                 //Store user details in view model
                 onboardingViewModel.userId = result.body()!!.user.id
@@ -138,7 +167,7 @@ class OtpFragment : Fragment() {
             }
             else {
                 //Continue with registration flow
-                Toast.makeText(requireActivity(), "User Doesn't Exist.", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireActivity(), "User Doesn't Exist.", Toast.LENGTH_SHORT).show()
 
                 findNavController().navigate(R.id.action_registerFragment_to_userDetailsFragment)
             }

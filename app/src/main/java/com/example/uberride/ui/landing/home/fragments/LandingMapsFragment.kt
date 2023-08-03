@@ -91,7 +91,6 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     ): View? {
 
         binding = FragmentLandingMapsBinding.inflate(inflater, container, false)
-
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
         }

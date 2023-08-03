@@ -101,14 +101,14 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
             when(it.itemId){
 
                 R.id.profile -> {
-                    Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show()
                     navController.navigate(R.id.action_landingMapsFragment_to_userProfileFragment)
                     drawerLayout.closeDrawer(Gravity.LEFT)
                 }
 
 
                 R.id.logout -> {
-                    Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show()
 
                     landingViewModel.clearSharedPreData()
                     auth.signOut()

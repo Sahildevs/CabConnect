@@ -37,6 +37,7 @@ class UserDetailsFragment : Fragment() {
 
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
+            viewmodel = onboardingViewModel
         }
 
         return binding.root
@@ -45,11 +46,8 @@ class UserDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //binding.etPhone.setText(onboardingViewModel.phoneNumber)
-
         onClick()
         serviceObserver()
-
 
     }
 
@@ -87,7 +85,7 @@ class UserDetailsFragment : Fragment() {
 
         onboardingViewModel.responseAddNewUser.observe(viewLifecycleOwner) { result->
             if (result.body() != null) {
-                Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
 
                 onboardingViewModel.userId = result.body()!!.user.id
                 onboardingViewModel.name = result.body()!!.user.name
@@ -96,15 +94,6 @@ class UserDetailsFragment : Fragment() {
                 storeDataToSharedPreference()
                 navigateToLandingMain()
 
-//                //Passing data to the next activity
-//                val bundle = Bundle()
-//                bundle.putString("NAME", onboardingViewModel.name)
-//                bundle.putString("PHONE", onboardingViewModel.phoneNumber)
-//                bundle.putInt("USER_ID", result.body()!!.user.id)
-
-//                val intent  = Intent(requireActivity(), LandingBaseActivity::class.java)
-//                intent.putExtras(bundle)
-//                startActivity(intent)
 
             }
             else {

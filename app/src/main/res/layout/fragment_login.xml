@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="Securely verify your phone number &amp; hop onboard."
+                android:letterSpacing="0.02"
                 style="@style/text_style_yellow_medium_text" />
 
 
