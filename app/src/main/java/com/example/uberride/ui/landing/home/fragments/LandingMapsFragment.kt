@@ -272,6 +272,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
             driverId = landingViewModel.driverId.toString(),
             latLng = {
                 //Receiving the current/live lat lng coordinates of the cab
+                Log.d("CAB", "************* Cab Tracking")
 
                 Log.d("Cordinates", "LatLng: $it")
                 landingViewModel.cabCurrentLocation = it
@@ -289,6 +290,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
     //Stop tracking the location of the booked cab
     private fun stopTrackingBookedCab() {
+        Log.d("CAB", "************* Cab Tracking Stopped")
         locationRegistration.remove()
     }
 
@@ -316,6 +318,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         binding.layoutFabCabDetails.isVisible = false
         binding.layoutFabSearch.isVisible = true
         landingViewModel.isDestinationArrived = false
+        //landingViewModel.cabCurrentLocation = null
     }
 
 
@@ -340,6 +343,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     override fun finishTrip() {
         resetDataToDefault()
         destinationReachedBottomSheet.dismiss()
+
 
     }
 
@@ -402,7 +406,12 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
                 //Handle location updates
 
                 val latLng = LatLng(location.latitude, location.longitude)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+
+                if (!landingViewModel.isCameraAnimated) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                    landingViewModel.isCameraAnimated = true
+                }
+
             }
         })
 
@@ -419,6 +428,10 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     @SuppressLint("MissingPermission")
     private fun getLastKnownLocation() {
 
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.marker1)
+        val bitmap = drawable?.toBitmap()
+
+
         locationUtils.getLastKnownLocation(object : LocationUtils.LocationReceiverCallback{
             override fun onLocationReceived(location: Location?) {
 
@@ -427,13 +440,11 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
 
                     val latLng = LatLng(location.latitude, location.longitude)
 
-                    val iconBitmap = BitmapFactory.decodeResource(resources, R.drawable.pickup_marker)
-                    val customMarker = BitmapDescriptorFactory.fromBitmap(iconBitmap)
 
                     //Remove previously added marker, if any
                     pickupMarker?.remove()
                     //Add a marker
-                    pickupMarker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here.").icon(customMarker))
+                    pickupMarker = mMap.addMarker(MarkerOptions().position(latLng).title("You are here.").icon(BitmapDescriptorFactory.fromBitmap(bitmap!!)))
 
 
                     //Store pickup location
@@ -452,8 +463,8 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
     //Search entered drop location
     override fun searchDropLocation(dropLocation: String) {
 
-        val iconBitmap = BitmapFactory.decodeResource(resources, R.drawable.drop_marker)
-        val customMarker = BitmapDescriptorFactory.fromBitmap(iconBitmap)
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.marker2)
+        val bitmap = drawable?.toBitmap()
 
         val address = locationUtils.searchDropLocation(dropLocation)!![0]
 
@@ -465,7 +476,7 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
             dropMarker?.remove()
 
             //Adding a new marker on the map
-            dropMarker = mMap.addMarker(MarkerOptions().position(latLng).title("Drop off").icon(customMarker))
+            dropMarker = mMap.addMarker(MarkerOptions().position(latLng).title("Drop off").icon(BitmapDescriptorFactory.fromBitmap(bitmap!!)))
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
 
             //Storing drop location in the view model

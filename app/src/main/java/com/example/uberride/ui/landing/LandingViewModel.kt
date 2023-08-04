@@ -45,6 +45,8 @@ class LandingViewModel @Inject constructor(private val repository: MainRepositor
 
     var isDestinationArrived: Boolean = false
 
+    var isCameraAnimated: Boolean = false
+
 
     private val firebaseUtils = FirebaseUtils()
 

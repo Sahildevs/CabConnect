@@ -126,7 +126,7 @@ class LocationUtils(private val context: Context) {
     fun hasCabArrived(cabLocation:LatLng, dropLocation:LatLng): Boolean {
 
         //Define the arrival threshold in kilometers/meters
-        val arrivalThreshold = 30.0 //30 meters
+        val arrivalThreshold = 100.0 //30 meters
         val distance = calculateDistance(point1 = cabLocation, point2 = dropLocation)
 
         Log.d("ARRIVED", "--------Threshold: $arrivalThreshold")
