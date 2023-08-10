@@ -42,7 +42,8 @@
             android:layout_width="109dp"
             android:layout_height="105dp"
             android:layout_gravity="center"
-            app:lottie_fileName="denied.json" />
+            app:lottie_fileName="denied.json"
+            app:lottie_autoPlay="true" />
 
         <androidx.legacy.widget.Space
             android:layout_width="match_parent"

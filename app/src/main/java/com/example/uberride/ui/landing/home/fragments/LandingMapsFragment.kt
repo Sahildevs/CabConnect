@@ -272,10 +272,12 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
             driverId = landingViewModel.driverId.toString(),
             latLng = {
                 //Receiving the current/live lat lng coordinates of the cab
-                Log.d("CAB", "************* Cab Tracking")
 
-                Log.d("Cordinates", "LatLng: $it")
+                Log.d("CAB ARRIVED", "Firebase cab latng: $it")
                 landingViewModel.cabCurrentLocation = it
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 16f))
+
 
                 //Remove previously added marker, if any
                 cabMarker?.remove()
@@ -303,6 +305,10 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
             dropLocation = LatLng(landingViewModel.dropLat!!, landingViewModel.dropLng!!)
         )
 
+        Log.d("CAB ARRIVED", "C : ${landingViewModel.cabCurrentLocation}")
+        Log.d("CAB ARRIVED", "D : ${LatLng(landingViewModel.dropLat!!, landingViewModel.dropLng!!)}")
+        Log.d("CAB ARRIVED", "$hasCabArrived")
+
         if (hasCabArrived && !landingViewModel.isDestinationArrived) {
 
             showDestinationReachedBottomSheet()
@@ -315,10 +321,11 @@ class LandingMapsFragment : Fragment(), AddDropLocationBottomSheet.Callback, Nea
         pickupMarker?.remove()
         dropMarker?.remove()
         cabMarker?.remove()
+        stopTrackingBookedCab()
         binding.layoutFabCabDetails.isVisible = false
         binding.layoutFabSearch.isVisible = true
         landingViewModel.isDestinationArrived = false
-        //landingViewModel.cabCurrentLocation = null
+        landingViewModel.cabCurrentLocation = null
     }
 
 

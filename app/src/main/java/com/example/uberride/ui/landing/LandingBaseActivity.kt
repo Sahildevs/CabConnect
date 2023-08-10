@@ -69,7 +69,7 @@ class LandingBaseActivity : AppCompatActivity(), NetworkUtils.NetworkCallback {
         retrieveUserDataFromSharedPref()
 
         //Customized status bar
-        window.statusBarColor = ContextCompat.getColor(this, R.color.yellow)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.custom_status)
 
         auth = FirebaseAuth.getInstance()
 

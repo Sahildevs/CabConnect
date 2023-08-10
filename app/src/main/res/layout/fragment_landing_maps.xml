@@ -47,9 +47,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Request Cab"
-                android:textColor="@color/white"
                 android:textSize="12sp"
-                style="@style/text_style_body_text"
+                style="@style/text_style_yellow_medium_text"
                 />
 
         </LinearLayout>

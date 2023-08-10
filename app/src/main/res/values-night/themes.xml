@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.UberRide" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/yellow</item>
-        <item name="colorPrimaryVariant">@color/black</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/yellow</item>         <!-- App bar color. -->
+        <item name="colorPrimaryVariant">@color/black</item>   <!-- Status bar color. -->
+        <item name="colorOnPrimary">@color/white</item>        <!-- App bar text/item color. -->
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/black</item>
         <item name="colorSecondaryVariant">@color/black</item>
@@ -12,5 +12,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColorHint">@color/grey</item>
     </style>
 </resources>

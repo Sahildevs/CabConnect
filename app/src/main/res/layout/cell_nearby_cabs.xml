@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="13dp">
+        >
 
         <LinearLayout
             android:id="@+id/parent_layout"
@@ -28,10 +28,15 @@
             android:background="@drawable/selector_border_color">
 
             <ImageView
-                android:layout_width="match_parent"
+                android:layout_width="110dp"
                 android:layout_height="90dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_background"/>
+                android:src="@drawable/unsplash"/>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/black" />
 
 
 
@@ -64,6 +69,13 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <Space
+            android:layout_width="11dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/parent_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

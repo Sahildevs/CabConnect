@@ -35,7 +35,7 @@
             android:drawableStart="@drawable/ic_my_location"
             android:drawablePadding="15dp"
             android:background="@drawable/bg_edit_text_grey"
-            android:hint="From"
+            android:hint="My Location"
             style="@style/text_style_body_text"/>
 
         <androidx.legacy.widget.Space
