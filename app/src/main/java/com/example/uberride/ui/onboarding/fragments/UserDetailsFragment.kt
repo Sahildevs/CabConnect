@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -67,6 +68,7 @@ class UserDetailsFragment : Fragment() {
 
             if (binding.etName.text.isNotEmpty() && binding.etPhone.text.isNotEmpty()){
 
+                binding.loader.isVisible = true
                 onboardingViewModel.name = binding.etName.text.toString()
                 onboardingViewModel.phoneNumber = binding.etPhone.text.toString()
 
@@ -86,6 +88,7 @@ class UserDetailsFragment : Fragment() {
         onboardingViewModel.responseAddNewUser.observe(viewLifecycleOwner) { result->
             if (result.body() != null) {
                 //Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
+                binding.loader.isVisible = false
 
                 onboardingViewModel.userId = result.body()!!.user.id
                 onboardingViewModel.name = result.body()!!.user.name
